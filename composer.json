@@ -1,0 +1,21 @@
+{
+    "require": {
+        
+        "php": ">=5.4",
+        "symfony/yaml": "v2.2.1",
+        "monolog/monolog": "1.4.1",
+        "zendframework/zend-filter":"2.2.*",
+        
+        "face/face": "dev-master"
+
+    },
+    "autoload": {
+        "psr-0" : {
+            "Controller"    :   "application/",
+            "Model"         :   "application/",
+            "App"           :   "application/",
+            "Climate"       :   "lib/",
+            "Printemps"     :   "lib/"
+        }
+    }
+}
