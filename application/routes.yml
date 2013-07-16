@@ -8,7 +8,7 @@ default:
 
   children:
 
-    generate-models:
+    models:
       options:
         h:
           type: string
@@ -29,5 +29,12 @@ default:
           man: Database that you want the models to be generated from
 
       controller: Embryo
-      action: generate
+      action: view
       man: generate the models from the database
+      
+      children:
+        
+        generate:
+          controller: Embryo
+          action: generate
+          man: generate the models from the database

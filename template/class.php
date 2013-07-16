@@ -1,32 +1,24 @@
 <?php echo "<?php";
 
-    //TODO PLACE IT IN THE COLUMN SUB OBJECT
-
-    $filterChain = new Zend\Filter\FilterChain();
-    $filterChain->attach(new Zend\Filter\Word\UnderscoreToCamelCase());
-    $filterChain->attach(new \Zend\Filter\Word\DashToCamelCase());
+/* @var $class \App\DbClass */
 
 ?>
 
-<?php if($namespace){ ?>        
-namespace <?= $namespace ?>;
+<?php if($class->getNamespace()){ ?>        
+namespace <?= $class->getNamespace() ?>;
 <?php } ?>
     
-class <?= $class ?> {
-
-    <?php foreach ($columns as $column){ /* @var $column \Model\Columns */ ?>
-    
+class <?= $class->getCamelClassName() ?> {
+<?php foreach ($class->getProperties() as $column){ /* @var $column \App\DbProperty */ ?>
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $<?= lcfirst($filterChain->filter($column->getColumn_name())) ?>;
+    protected $<?= $column->getColumnName() ?>;
+<?php } ?>
     
-
-    <?php } ?>
-    
-    <?php if($accessors){ ?>  
-        <?php foreach ($columns as $column){ /* @var $column \Model\Columns */ ?>
+<?php    if($accessors){ ?>  
+        <?php foreach ($class->getProperties() as $column){ /* @var $column \App\DbProperty */ ?>
 
         /**
          *
@@ -35,16 +27,14 @@ class <?= $class ?> {
         public function get<?= $filterChain->filter($column->getColumn_name()) ?>(){
             return $this-><?= lcfirst($filterChain->filter($column->getColumn_name())) ?>;
         }
-        
+
         /**
          *
          */
         // TODO docblok : TYPE + COMMENT + ENTITY SI BESOIN
         public function set<?= $filterChain->filter($column->getColumn_name()) ?>($value){
             $this-><?= lcfirst($filterChain->filter($column->getColumn_name())) ?>=$value;
-            <?php if($fluentSetter){ ?>
-            return $this;
-            <?php } ?>
+            <?php if($fluentSetter){ ?>return $this;<?php } ?>
         }
 
         <?php } ?>
@@ -55,24 +45,30 @@ class <?= $class ?> {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"TODO",
+            "sqlTable"=>"<?= $class->getTableName() ?>",
             
-            "elements"=>[
-            
-                <?php foreach ($columns as $column){ /* @var $column \Model\Columns */ ?>
+            "elements"=>[            
+<?php foreach ($class->getProperties() as $column){ /* @var $column \App\DbProperty */ ?>
 
-                   
-                "<?= $column->getColumn_name() ?>"=>[
-                    "identifier"=>true,
+                "<?= $column->getColumnName() ?>"=>[
+                    "identifier"=><?= $column->getIsPrimary()?"true":"false" ?>,
                     "sql"=>[
-                        "isPrimary" => true
-                    ]
+                        "isPrimary" => <?= $column->getIsPrimary()?"true":"false" ?>,
+                    ],
                 ],
+<?php } ?>
 
-                <?php } ?>
-            
-            
-            
+<?php foreach ($class->getEntities() as $relation){ /* @var $relation \App\DbRelation */ ?>
+
+                "<?= $relation->getReferencedColumn()->getColumnName() ?>"=>[
+                    "identifier"=><?= $relation->getName()?"true":"false" ?>,
+                    "sql"=>[
+                        "isPrimary" => <?= $relation->getName()?"true":"false" ?>,
+                    ],
+                ],
+<?php } ?>
+                
+                
             ]
         ];
     

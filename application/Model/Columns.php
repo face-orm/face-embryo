@@ -34,6 +34,20 @@ class Columns{
         return $this->column_name;
     }
 
+    
+    public function getTable_schema() {
+        return $this->table_schema;
+    }
+
+    public function getKeyColumnUsagesReferencing() {
+        return $this->keyColumnUsagesReferencing;
+    }
+
+    public function getTable() {
+        return $this->table;
+    }
+
+
 
 
     
