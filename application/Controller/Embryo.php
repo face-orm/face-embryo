@@ -9,7 +9,7 @@ namespace Controller;
  */
 class Embryo extends \Climate\Controller{
 
-    public function generate(){
+    public function generateOld(){
         
         $fQ=\Model\Tables::faceQueryBuilder();
         $fQ->join("columns");
@@ -79,6 +79,127 @@ class Embryo extends \Climate\Controller{
 
         
     }
+    
+    
+    
+    
+    
+    public function generate(){
+        
+        $fQ=\Model\Tables::faceQueryBuilder();
+        $fQ->join("columns");
+        $fQ->join("columns.keyColumnUsages");
+        $fQ->join("columns.keyColumnUsages.referencedColumn");
+        $fQ->where("~table_schema=:name");
+        $fQ->bindValue(":name","lemon-test");
+
+        
+        
+        $tables=\Climate\Application::service("ORM")->execute($fQ);
+        
+        /* @var $tables \Face\Sql\Result\ResultSet */
+
+        
+        // prepare camel filter
+        $filterChain = new \Zend\Filter\FilterChain();
+        $filterChain->attach(new \Zend\Filter\Word\UnderscoreToCamelCase());
+        $filterChain->attach(new \Zend\Filter\Word\DashToCamelCase());
+        
+        //echo $fQ->getSqlString();
+
+        $classes=array();
+        
+        
+        foreach($tables as $t){
+            
+            $class=new \Face\Core\EntityFace();
+            $class->setSqlTable($t->getTable_name());
+            
+            $class->setClass( ucfirst($filterChain->filter( $t->getTable_name() ) ));
+            
+            
+            $classes[$t->getTable_name()]=$class;
+      
+            foreach($t->getColumns() as $c){
+                /* @var $c \Model\Columns */
+
+                echo $c->getColumn_name().PHP_EOL;
+                
+                $p=new \Face\Core\EntityFaceElement();
+                $p->setSqlColumnName($c->getColumn_name());
+                $p->setPropertyName($p->getSqlColumnName());
+                $p->setType("value");
+                $p->setName($p->getSqlColumnName());
+                
+                
+                if($c->getKeyColumnUsages()){
+                    foreach ($c->getKeyColumnUsages() as $kcu){
+                        if(  strtolower($kcu->getConstraint_name())  ==  "primary"  ){
+                           $p->setSqlIsPrimary(true);
+                           $p->setIsIdentifier(true);
+                        }
+                    }
+                }
+                
+                $classes[$t->getTable_name()]->addElement($p);
+                
+                
+            }
+        }
+        
+        
+        foreach($tables as $t){
+      
+            foreach($t->getColumns() as $c){
+                /* @var $c \Model\Columns */
+
+                
+                if($c->getKeyColumnUsages()){
+                    foreach ($c->getKeyColumnUsages() as $kcu){
+                        if($kcu->getReferencedColumn()){
+                           $cr=$kcu->getReferencedColumn();
+                           $p2=new \App\DbProperty();
+                           $p2->setColumnName($cr->getColumn_name());
+                           $r=new \App\DbRelation();
+                           $r->setReferencingColumn($p);
+                           $r->setReferencedColumn($p2);
+                           $classes[$t->getTable_name()]->addEntity($r);
+                           
+                           $p = new \Face\Core\EntityFaceElement();
+                           $p->setType("entity");
+                           $p->setPropertyName($c->getColumn_name());
+                           $p->setName($c->getColumn_name());
+                           
+                           $classes[$t->getTable_name()]->addElement($p);
+                           
+                        }
+
+
+                    }
+                }
+                
+                
+            }
+        }
+        
+        
+
+        
+        foreach($classes as $class){
+            /* @var $class \Face\Core\EntityFace */
+            $file=fopen("trashtest/".$class->getClass().".php", "w+");
+            ob_start();
+            include "template/class.php";
+            $content = ob_get_contents();
+            ob_end_clean();
+            fwrite($file, $content);
+            fclose($file);
+        }
+
+        
+    }
+    
+    
     
     
     public function view(){

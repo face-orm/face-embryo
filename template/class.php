@@ -1,21 +1,27 @@
 <?php echo "<?php";
 
-/* @var $class \App\DbClass */
+/* @var $class \Face\Core\EntityFace */
 
 ?>
 
-<?php if($class->getNamespace()){ ?>        
+<?php if($namespace){ ?>        
 namespace <?= $class->getNamespace() ?>;
 <?php } ?>
     
-class <?= $class->getCamelClassName() ?> {
-<?php foreach ($class->getProperties() as $column){ /* @var $column \App\DbProperty */ ?>
+class <?= $class->getClass() ?> {
+<?php 
+foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFaceElement */ 
+   
+    ?>
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $<?= $column->getColumnName() ?>;
-<?php } ?>
+    protected $<?= $column->getSqlColumnName() ?>;
+<?php 
+} 
+?>
+    
     
 <?php    if($accessors){ ?>  
         <?php foreach ($class->getProperties() as $column){ /* @var $column \App\DbProperty */ ?>
@@ -45,27 +51,27 @@ class <?= $class->getCamelClassName() ?> {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"<?= $class->getTableName() ?>",
+            "sqlTable"=>"<?= $class->getSqlTable() ?>",
             
             "elements"=>[            
-<?php foreach ($class->getProperties() as $column){ /* @var $column \App\DbProperty */ ?>
+<?php foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFaceElement */ ?>
+<?php if($column->isValue()){ ?>
 
-                "<?= $column->getColumnName() ?>"=>[
-                    "identifier"=><?= $column->getIsPrimary()?"true":"false" ?>,
+                "<?= $column->getSqlColumnName() ?>"=>[
+                    "identifier"=><?= $column->getIsIdentifier()?"true":"false" ?>,
                     "sql"=>[
-                        "isPrimary" => <?= $column->getIsPrimary()?"true":"false" ?>,
+                        "isPrimary" => <?= $column->getSqlIsPrimary()?"true":"false" ?>,
                     ],
                 ],
-<?php } ?>
-
-<?php foreach ($class->getEntities() as $relation){ /* @var $relation \App\DbRelation */ ?>
-
+<?php }else{ ?>
                 "<?= $relation->getReferencedColumn()->getColumnName() ?>"=>[
                     "identifier"=><?= $relation->getName()?"true":"false" ?>,
                     "sql"=>[
                         "isPrimary" => <?= $relation->getName()?"true":"false" ?>,
                     ],
                 ],
+<?php } ?>
+                
 <?php } ?>
                 
                 
