@@ -19,7 +19,11 @@ class Columns{
 
     protected $table;
     
-    
+    protected $extra;
+
+
+
+
     public function getKeyColumnUsages() {
         return $this->keyColumnUsages;
     }
@@ -47,7 +51,9 @@ class Columns{
         return $this->table;
     }
 
-
+    public function getExtra(){
+        return $this->extra;
+    }
 
 
     
@@ -83,6 +89,8 @@ class Columns{
                         "isPrimary" => true
                     ]
                 ],
+                
+                "extra"=>[],
                 
                 "keyColumnUsages"=>[
                     "class"=>"Model\KeyColumnUsage",

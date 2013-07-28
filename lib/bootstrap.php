@@ -44,14 +44,20 @@ define("START_SCRIPT", microtime(true));
 /**
  * Set Basepath to Root of Application. It makes includes easier .
  */
-chdir(dirname("."));
- 
+$baseDir = realpath( getcwd() );
+chdir(__DIR__."/../");
+
+
 /**
  * Get Composer Autoloader because it just works like a charm :)
  */
 require_once "vendor/autoload.php";
 
+/**
+ * SET THE BASE DIRECTORY
+ */
 
+\Climate\Application::$baseDir=$baseDir;
 
 
 /*===============================

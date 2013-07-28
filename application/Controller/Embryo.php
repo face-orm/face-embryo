@@ -90,7 +90,10 @@ class Embryo extends \Climate\Controller{
         $user = $this->u;
         $pswd = $this->p;
         $db   = $this->d;
-        $ouput= rtrim($this->o,"/");
+        $output= rtrim($this->o,"/");
+        if ($output{0} != "/") {
+            $output=  \Climate\Application::$baseDir."/$output";
+        }
         
         //////////////////////
         // CREATE THE QUERY
@@ -142,6 +145,7 @@ class Embryo extends \Climate\Controller{
                 $p->setPropertyName($p->getSqlColumnName());
                 $p->setType("value");
                 $p->setName($p->getSqlColumnName());
+                $p->setSqlAutoIncrement($c->getExtra()=="auto_increment");
                 
                 
                 if($c->getKeyColumnUsages()){
@@ -250,7 +254,7 @@ class Embryo extends \Climate\Controller{
         
         foreach($classes as $class){
             /* @var $class \Face\Core\EntityFace */
-            $file=fopen("$ouput/".$class->getClass().".php", "w+"); // TODO : psr-0 structure
+            $file=fopen("$output/".$class->getClass().".php", "w+"); // TODO : psr-0 structure
             ob_start();
             include "template/class.php";
             $content = ob_get_contents();
@@ -283,8 +287,18 @@ class Embryo extends \Climate\Controller{
             echo($t->getTable_name().PHP_EOL);
             
             foreach($t->getColumns() as $c){
-                echo "  | ".$c->getColumn_name()."::".count($c->getKeyColumnUsages()).PHP_EOL;
+                // column name
+                echo "  | ".$c->getColumn_name();
+                // number of column usages
+                if(count($c->getKeyColumnUsages())>0)
+                    echo "::".count($c->getKeyColumnUsages());
+                // is autoinc
+                if($c->getExtra()=="auto_increment")
+                    echo \Printemps::Color(" AUTOINCREMENT","green");
 
+                echo PHP_EOL;
+
+                
                 foreach ($c->getKeyColumnUsages() as $kcu){
                     if($kcu->getReferencedColumn())
                         echo "     ".\Printemps::Color("| ".$kcu->getReferencedColumn()->getTable_name() . "." . $kcu->getReferencedColumn()->getColumn_name(),"yellow").PHP_EOL;

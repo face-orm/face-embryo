@@ -39,8 +39,9 @@ class Application {
      */
     protected static $config;
     
-    
-    
+    public static $baseDir;
+
+
     protected static $services;
     
     public static function init($args, \Climate\Router $router){

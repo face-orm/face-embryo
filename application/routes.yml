@@ -28,9 +28,7 @@ default:
           type: string
           man: Database that you want the models to be generated from
           
-        o:
-          type: string
-          man: output directory
+       
 
       controller: Embryo
       action: view
@@ -42,3 +40,8 @@ default:
           controller: Embryo
           action: generate
           man: generate the models from the database
+          
+          options:
+             o:
+              type: string
+              man: output directory
