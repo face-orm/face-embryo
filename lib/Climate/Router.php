@@ -12,6 +12,10 @@ use Climate\Exception\NoRouteFoundException;
 
 class Router{
     
+    /**
+     *
+     * @var type 
+     */
     protected $routes;
     
     /**

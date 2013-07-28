@@ -12,11 +12,11 @@ class <?= $class->getClass() ?> {
 <?php 
 foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFaceElement */ 
    
-    ?>
+    ?><?php if($column->isEntity()){ ?>
     /**
-     *
+     * @var type \<?= $column->getClass() ?>
      */
-    // TODO TYPE + COMMENT + ENTITY SI BESOIN
+<?php } ?>
     protected $<?= $column->getPropertyName() ?>;
 <?php 
 } 
