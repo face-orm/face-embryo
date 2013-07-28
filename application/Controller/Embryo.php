@@ -90,6 +90,7 @@ class Embryo extends \Climate\Controller{
         $user = $this->u;
         $pswd = $this->p;
         $db   = $this->d;
+        $ouput= rtrim($this->o,"/");
         
         //////////////////////
         // CREATE THE QUERY
@@ -249,7 +250,7 @@ class Embryo extends \Climate\Controller{
         
         foreach($classes as $class){
             /* @var $class \Face\Core\EntityFace */
-            $file=fopen("trashtest/".$class->getClass().".php", "w+");
+            $file=fopen("$ouput/".$class->getClass().".php", "w+"); // TODO : psr-0 structure
             ob_start();
             include "template/class.php";
             $content = ob_get_contents();

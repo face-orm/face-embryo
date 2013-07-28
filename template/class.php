@@ -14,7 +14,7 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
    
     ?><?php if($column->isEntity()){ ?>
     /**
-     * @var type \<?= $column->getClass() ?>
+     * @var \<?= $column->getClass() ?> 
      */
 <?php } ?>
     protected $<?= $column->getPropertyName() ?>;
@@ -23,29 +23,25 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
 ?>
     
     
-<?php    if($accessors){ ?>  
-        <?php foreach ($class->getProperties() as $column){ /* @var $column \App\DbProperty */ ?>
 
-        /**
-         *
-         */
-        // TODO docblok : TYPE + COMMENT + ENTITY SI BESOIN
-        public function get<?= $filterChain->filter($column->getColumn_name()) ?>(){
-            return $this-><?= lcfirst($filterChain->filter($column->getColumn_name())) ?>;
-        }
+<?php foreach ($class->getElements() as $column){ /* @var $column \App\DbProperty */ ?>
 
-        /**
-         *
-         */
-        // TODO docblok : TYPE + COMMENT + ENTITY SI BESOIN
-        public function set<?= $filterChain->filter($column->getColumn_name()) ?>($value){
-            $this-><?= lcfirst($filterChain->filter($column->getColumn_name())) ?>=$value;
-            <?php if($fluentSetter){ ?>return $this;<?php } ?>
-        }
+<?php     if($column->isEntity()){ ?>
+    /**
+     * @return \<?= $column->getClass() ?> 
+     */
+<?php     } ?>
+    public function get<?= ucfirst($column->getPropertyName()) ?>(){
+        return $this-><?= $column->getPropertyName() ?>;
+    }
 
-        <?php } ?>
-    <?php } ?>
-        
+    public function set<?= ucfirst($column->getPropertyName()) ?>($value){
+        $this-><?= $column->getPropertyName() ?>=$value;
+<?php         if($fluentSetter){ ?>return $this;<?php } ?>
+    }
+
+<?php } ?>
+
     use \Face\Traits\EntityFaceTrait;
     
     public static function __getEntityFace() {
