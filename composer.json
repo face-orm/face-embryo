@@ -5,7 +5,7 @@
         "symfony/yaml": "v2.2.1",
         "monolog/monolog": "1.4.1",
         "zendframework/zend-filter":"2.2.*",
-        
+        "kevinlebrun/colors.php": "0.*",
         "face/face": "dev-master"
 
     },

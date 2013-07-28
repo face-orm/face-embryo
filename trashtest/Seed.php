@@ -10,12 +10,17 @@ class Seed {
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
+    protected $lemon_id;
+    /**
+     *
+     */
+    // TODO TYPE + COMMENT + ENTITY SI BESOIN
     protected $fertil;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $lemon_id;
+    protected $Lemon;
     
     
         
@@ -36,7 +41,7 @@ class Seed {
                 ],
                 
 
-                "fertil"=>[
+                "lemon_id"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
@@ -44,10 +49,20 @@ class Seed {
                 ],
                 
 
-                "lemon_id"=>[
+                "fertil"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
+                    ],
+                ],
+                
+                "Lemon"=>[
+                    "property"=>"Lemon",
+                    "class"=>"Lemon",
+                    "relation"=>"belongsTo",
+                    "relatedBy"=>"Seed",
+                    "sql"=>[
+                    "join" => ["lemon_id"=>"id"]
                     ],
                 ],
                 

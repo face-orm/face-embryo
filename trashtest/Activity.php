@@ -1,26 +1,26 @@
 <?php
     
-class Tree {
+class Activity {
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $id;
+    protected $id_activity;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $age;
+    protected $libelle;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Leaf;
+    protected $image;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Lemon;
+    protected $SiteHasActivity;
     
     
         
@@ -29,11 +29,11 @@ class Tree {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"tree",
+            "sqlTable"=>"activity",
             
             "elements"=>[            
 
-                "id"=>[
+                "id_activity"=>[
                     "identifier"=>true,
                     "sql"=>[
                         "isPrimary" => true,
@@ -41,30 +41,28 @@ class Tree {
                 ],
                 
 
-                "age"=>[
+                "libelle"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
                     ],
                 ],
                 
-                "Leaf"=>[
-                    "property"=>"Leaf",
-                    "class"=>"Leaf",
-                    "relation"=>"hasMany",
-                    "relatedBy"=>"Tree",
+
+                "image"=>[
+                    "identifier"=>false,
                     "sql"=>[
-                    "join" => ["id"=>"tree_id"]
+                        "isPrimary" => false,
                     ],
                 ],
                 
-                "Lemon"=>[
-                    "property"=>"Lemon",
-                    "class"=>"Lemon",
+                "SiteHasActivity"=>[
+                    "property"=>"SiteHasActivity",
+                    "class"=>"SiteHasActivity",
                     "relation"=>"hasMany",
-                    "relatedBy"=>"Tree",
+                    "relatedBy"=>"Activity",
                     "sql"=>[
-                    "join" => ["id"=>"tree_id"]
+                    "join" => ["id_activity"=>"id_activity"]
                     ],
                 ],
                 

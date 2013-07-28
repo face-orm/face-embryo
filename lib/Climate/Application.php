@@ -54,6 +54,8 @@ class Application {
     public static function start(){
         
         try{
+            
+            
             $params=self::$routeur->route(self::$args);
             
             $className  = "\\Controller\\".$params['controller'];
@@ -100,6 +102,8 @@ class Application {
             self::stop();
             
         }
+        
+        
         
         $c->setParams($params['params']);
         $c->$action();

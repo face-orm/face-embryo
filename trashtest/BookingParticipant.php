@@ -1,26 +1,36 @@
 <?php
     
-class Leaf {
+class BookingParticipant {
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $id;
+    protected $id_booking_participant;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $length;
+    protected $id_booking;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $tree_id;
+    protected $first_name;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Tree;
+    protected $last_name;
+    /**
+     *
+     */
+    // TODO TYPE + COMMENT + ENTITY SI BESOIN
+    protected $birthdate;
+    /**
+     *
+     */
+    // TODO TYPE + COMMENT + ENTITY SI BESOIN
+    protected $Booking;
     
     
         
@@ -29,11 +39,11 @@ class Leaf {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"leaf",
+            "sqlTable"=>"booking_participant",
             
             "elements"=>[            
 
-                "id"=>[
+                "id_booking_participant"=>[
                     "identifier"=>true,
                     "sql"=>[
                         "isPrimary" => true,
@@ -41,7 +51,7 @@ class Leaf {
                 ],
                 
 
-                "length"=>[
+                "id_booking"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
@@ -49,20 +59,36 @@ class Leaf {
                 ],
                 
 
-                "tree_id"=>[
+                "first_name"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
                     ],
                 ],
                 
-                "Tree"=>[
-                    "property"=>"Tree",
-                    "class"=>"Tree",
-                    "relation"=>"belongsTo",
-                    "relatedBy"=>"Leaf",
+
+                "last_name"=>[
+                    "identifier"=>false,
                     "sql"=>[
-                    "join" => ["tree_id"=>"id"]
+                        "isPrimary" => false,
+                    ],
+                ],
+                
+
+                "birthdate"=>[
+                    "identifier"=>false,
+                    "sql"=>[
+                        "isPrimary" => false,
+                    ],
+                ],
+                
+                "Booking"=>[
+                    "property"=>"Booking",
+                    "class"=>"Booking",
+                    "relation"=>"belongsTo",
+                    "relatedBy"=>"BookingParticipant",
+                    "sql"=>[
+                    "join" => ["id_booking"=>"id_booking"]
                     ],
                 ],
                 

@@ -39,10 +39,12 @@ class Router{
         $it=new \ArrayIterator($args);
         $route=$this->routes["default"];
         $routeName='default';
-        
+        $params=array();
         
         while($it->valid()){
             $current=$it->current();
+            
+
             
             if("-" === $current{0}){
                 //OPTION CASE
@@ -53,6 +55,7 @@ class Router{
                     
                     $optionName=ltrim($current,"-"); // remove the -  "-e" becomes "e"
                     
+                    
                     // Look whether or not the option exists
                     if(isset($route['options']) && isset($route['options'][$optionName])){
                         $it->next();
@@ -62,6 +65,7 @@ class Router{
                             throw new Exception\BadOptionException("option $current has no value");
                             
                         $optionValue=$it->current();
+                        
                         
                         // option maybe needs a to match a type. Look if so
                         if(isset($route['options'][$optionName]['type'])){
@@ -94,6 +98,7 @@ class Router{
                         
                         $route['options'][$optionName]['default']=$optionValue;
                         
+
                     }else{
                         throw new Exception\BadOptionException("option $current is not a valid option");
                     }
@@ -106,14 +111,25 @@ class Router{
                 if(!isset($route['children'][$current]))
                     throw new NoRouteFoundException("$current is not a valid Operation");
                 
+                if(isset($route["options"])){
+                    foreach ($route["options"] as $name=>$opt){
+                        if( ! isset($opt['default']))
+                            throw new Exception\BadOptionException("Option -$name was omited, -$name is needed");
+
+                        $params[$name]=$opt['default'];
+
+                    }
+                }
+                
+                
                 $route=$route['children'][$current];
                 $routeName=$current;
             }
             
+            
             $it->next();
         }
         
-        $params=array();
         
         if(isset($route["options"])){
             foreach ($route["options"] as $name=>$opt){
@@ -124,6 +140,8 @@ class Router{
 
             }
         }
+        
+        
             
         if(!isset($route['controller']))
             throw new RouteConfigException($routeName." has no controller");

@@ -1,26 +1,26 @@
 <?php
     
-class Tree {
+class Country {
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $id;
+    protected $id_country;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $age;
+    protected $iso;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Leaf;
+    protected $libelle;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Lemon;
+    protected $City;
     
     
         
@@ -29,11 +29,11 @@ class Tree {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"tree",
+            "sqlTable"=>"country",
             
             "elements"=>[            
 
-                "id"=>[
+                "id_country"=>[
                     "identifier"=>true,
                     "sql"=>[
                         "isPrimary" => true,
@@ -41,30 +41,28 @@ class Tree {
                 ],
                 
 
-                "age"=>[
+                "iso"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
                     ],
                 ],
                 
-                "Leaf"=>[
-                    "property"=>"Leaf",
-                    "class"=>"Leaf",
-                    "relation"=>"hasMany",
-                    "relatedBy"=>"Tree",
+
+                "libelle"=>[
+                    "identifier"=>false,
                     "sql"=>[
-                    "join" => ["id"=>"tree_id"]
+                        "isPrimary" => false,
                     ],
                 ],
                 
-                "Lemon"=>[
-                    "property"=>"Lemon",
-                    "class"=>"Lemon",
+                "City"=>[
+                    "property"=>"City",
+                    "class"=>"City",
                     "relation"=>"hasMany",
-                    "relatedBy"=>"Tree",
+                    "relatedBy"=>"Country",
                     "sql"=>[
-                    "join" => ["id"=>"tree_id"]
+                    "join" => ["id_country"=>"id_country"]
                     ],
                 ],
                 

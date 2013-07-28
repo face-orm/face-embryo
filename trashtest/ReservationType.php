@@ -1,26 +1,26 @@
 <?php
     
-class Tree {
+class ReservationType {
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $id;
+    protected $id_location_type;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $age;
+    protected $label;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Leaf;
+    protected $Image;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Lemon;
+    protected $Reservation;
     
     
         
@@ -29,11 +29,11 @@ class Tree {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"tree",
+            "sqlTable"=>"reservation_type",
             
             "elements"=>[            
 
-                "id"=>[
+                "id_location_type"=>[
                     "identifier"=>true,
                     "sql"=>[
                         "isPrimary" => true,
@@ -41,30 +41,30 @@ class Tree {
                 ],
                 
 
-                "age"=>[
+                "label"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
                     ],
                 ],
                 
-                "Leaf"=>[
-                    "property"=>"Leaf",
-                    "class"=>"Leaf",
+                "Image"=>[
+                    "property"=>"Image",
+                    "class"=>"Image",
                     "relation"=>"hasMany",
-                    "relatedBy"=>"Tree",
+                    "relatedBy"=>"ReservationType",
                     "sql"=>[
-                    "join" => ["id"=>"tree_id"]
+                    "join" => ["id_location_type"=>"id_reservation_type"]
                     ],
                 ],
                 
-                "Lemon"=>[
-                    "property"=>"Lemon",
-                    "class"=>"Lemon",
+                "Reservation"=>[
+                    "property"=>"Reservation",
+                    "class"=>"Reservation",
                     "relation"=>"hasMany",
-                    "relatedBy"=>"Tree",
+                    "relatedBy"=>"ReservationType",
                     "sql"=>[
-                    "join" => ["id"=>"tree_id"]
+                    "join" => ["id_location_type"=>"id_location_type"]
                     ],
                 ],
                 

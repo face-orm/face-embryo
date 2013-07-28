@@ -1,26 +1,21 @@
 <?php
     
-class Tree {
+class Inventory {
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $id;
+    protected $id_inventory;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $age;
+    protected $InventoryItem;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Leaf;
-    /**
-     *
-     */
-    // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Lemon;
+    protected $Reservation;
     
     
         
@@ -29,42 +24,34 @@ class Tree {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"tree",
+            "sqlTable"=>"inventory",
             
             "elements"=>[            
 
-                "id"=>[
+                "id_inventory"=>[
                     "identifier"=>true,
                     "sql"=>[
                         "isPrimary" => true,
                     ],
                 ],
                 
-
-                "age"=>[
-                    "identifier"=>false,
+                "InventoryItem"=>[
+                    "property"=>"InventoryItem",
+                    "class"=>"InventoryItem",
+                    "relation"=>"hasMany",
+                    "relatedBy"=>"Inventory",
                     "sql"=>[
-                        "isPrimary" => false,
+                    "join" => ["id_inventory"=>"id_inventory"]
                     ],
                 ],
                 
-                "Leaf"=>[
-                    "property"=>"Leaf",
-                    "class"=>"Leaf",
+                "Reservation"=>[
+                    "property"=>"Reservation",
+                    "class"=>"Reservation",
                     "relation"=>"hasMany",
-                    "relatedBy"=>"Tree",
+                    "relatedBy"=>"Inventory",
                     "sql"=>[
-                    "join" => ["id"=>"tree_id"]
-                    ],
-                ],
-                
-                "Lemon"=>[
-                    "property"=>"Lemon",
-                    "class"=>"Lemon",
-                    "relation"=>"hasMany",
-                    "relatedBy"=>"Tree",
-                    "sql"=>[
-                    "join" => ["id"=>"tree_id"]
+                    "join" => ["id_inventory"=>"id_inventory"]
                     ],
                 ],
                 

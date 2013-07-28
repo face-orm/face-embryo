@@ -17,7 +17,7 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $<?= $column->getSqlColumnName() ?>;
+    protected $<?= $column->getPropertyName() ?>;
 <?php 
 } 
 ?>
@@ -64,10 +64,13 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
                     ],
                 ],
 <?php }else{ ?>
-                "<?= $relation->getReferencedColumn()->getColumnName() ?>"=>[
-                    "identifier"=><?= $relation->getName()?"true":"false" ?>,
+                "<?= $column->getName() ?>"=>[
+                    "property"=>"<?= $column->getPropertyName() ?>",
+                    "class"=>"<?= $column->getClass() ?>",
+                    "relation"=>"<?= $column->getRelation() ?>",
+                    "relatedBy"=>"<?= $column->getRelatedBy() ?>",
                     "sql"=>[
-                        "isPrimary" => <?= $relation->getName()?"true":"false" ?>,
+                    "join" => ["<?= key( $column->getSqlJoin() )?>"=>"<?= current( $column->getSqlJoin() )?>"]
                     ],
                 ],
 <?php } ?>

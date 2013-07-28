@@ -1,26 +1,31 @@
 <?php
     
-class Leaf {
+class SiteHasActivity {
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $id;
+    protected $id_site_has_activity;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $length;
+    protected $id_site;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $tree_id;
+    protected $id_activity;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Tree;
+    protected $GeoSite;
+    /**
+     *
+     */
+    // TODO TYPE + COMMENT + ENTITY SI BESOIN
+    protected $Activity;
     
     
         
@@ -29,11 +34,11 @@ class Leaf {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"leaf",
+            "sqlTable"=>"site_has_Activity",
             
             "elements"=>[            
 
-                "id"=>[
+                "id_site_has_activity"=>[
                     "identifier"=>true,
                     "sql"=>[
                         "isPrimary" => true,
@@ -41,7 +46,7 @@ class Leaf {
                 ],
                 
 
-                "length"=>[
+                "id_site"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
@@ -49,20 +54,30 @@ class Leaf {
                 ],
                 
 
-                "tree_id"=>[
+                "id_activity"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
                     ],
                 ],
                 
-                "Tree"=>[
-                    "property"=>"Tree",
-                    "class"=>"Tree",
+                "GeoSite"=>[
+                    "property"=>"GeoSite",
+                    "class"=>"GeoSite",
                     "relation"=>"belongsTo",
-                    "relatedBy"=>"Leaf",
+                    "relatedBy"=>"SiteHasActivity",
                     "sql"=>[
-                    "join" => ["tree_id"=>"id"]
+                    "join" => ["id_site"=>"id_site"]
+                    ],
+                ],
+                
+                "Activity"=>[
+                    "property"=>"Activity",
+                    "class"=>"Activity",
+                    "relation"=>"belongsTo",
+                    "relatedBy"=>"SiteHasActivity",
+                    "sql"=>[
+                    "join" => ["id_activity"=>"id_activity"]
                     ],
                 ],
                 

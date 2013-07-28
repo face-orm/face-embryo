@@ -36,7 +36,11 @@ class KeyColumnUsage{
         $this->constraint_name = $constraint_name;
     }
 
-        
+    
+    /**
+     * 
+     * @return \Model\Columns
+     */
     public function getReferencedColumn() {
         return $this->referencedColumn;
     }

@@ -86,30 +86,41 @@ class Embryo extends \Climate\Controller{
     
     public function generate(){
         
+        $host = $this->h;
+        $user = $this->u;
+        $pswd = $this->p;
+        $db   = $this->d;
+        
+        //////////////////////
+        // CREATE THE QUERY
         $fQ=\Model\Tables::faceQueryBuilder();
         $fQ->join("columns");
         $fQ->join("columns.keyColumnUsages");
         $fQ->join("columns.keyColumnUsages.referencedColumn");
         $fQ->where("~table_schema=:name");
-        $fQ->bindValue(":name","lemon-test");
+        $fQ->bindValue(":name",$db);
 
+        $pdo=new \PDO("mysql:host=$host;dbname=information_schema",$user, $pswd);
         
-        
-        $tables=\Climate\Application::service("ORM")->execute($fQ);
-        
+        //////////////////////
+        // EXECUTE THE QUERY
+        $tables=  \Face\ORM::execute($fQ, $pdo);
         /* @var $tables \Face\Sql\Result\ResultSet */
 
         
-        // prepare camel filter
+        //////////////////////
+        // CREATE THE FILTER TO CONVERT UNDERSCORED/DASHED TABLE/COLUMN NAMES TO CAMELCASE
         $filterChain = new \Zend\Filter\FilterChain();
         $filterChain->attach(new \Zend\Filter\Word\UnderscoreToCamelCase());
         $filterChain->attach(new \Zend\Filter\Word\DashToCamelCase());
         
-        //echo $fQ->getSqlString();
 
+        // LIST OF THE THE CLASS :: 1 CLASS = 1 TABLE
         $classes=array();
         
         
+        //////////////////////
+        // GENERATE PROPERTIES
         foreach($tables as $t){
             
             $class=new \Face\Core\EntityFace();
@@ -148,6 +159,9 @@ class Embryo extends \Climate\Controller{
         }
         
         
+        
+        //////////////////////
+        // GENERATE ENTITIES
         foreach($tables as $t){
       
             foreach($t->getColumns() as $c){
@@ -156,25 +170,73 @@ class Embryo extends \Climate\Controller{
                 
                 if($c->getKeyColumnUsages()){
                     foreach ($c->getKeyColumnUsages() as $kcu){
+                        /* @var $kcu \Model\KeyColumnUsage */
                         if($kcu->getReferencedColumn()){
-                           $cr=$kcu->getReferencedColumn();
-                           $p2=new \App\DbProperty();
-                           $p2->setColumnName($cr->getColumn_name());
-                           $r=new \App\DbRelation();
-                           $r->setReferencingColumn($p);
-                           $r->setReferencedColumn($p2);
-                           $classes[$t->getTable_name()]->addEntity($r);
                            
-                           $p = new \Face\Core\EntityFaceElement();
-                           $p->setType("entity");
-                           $p->setPropertyName($c->getColumn_name());
-                           $p->setName($c->getColumn_name());
-                           
-                           $classes[$t->getTable_name()]->addElement($p);
+  
+                            
+                            $face=$classes[$t->getTable_name()];
+                            $rFace=$classes[$kcu->getReferencedColumn()->getTable_name()];
+                            
+                            
+                            // TODO look if name/property doesnt already exist
+                            $entity = new \Face\Core\EntityFaceElement();
+                            $entity->setType("entity");
+                            $entity->setName($rFace->getClass());  // TODO  : remove namespace
+                            $entity->setClass($rFace->getClass());
+                            $entity->setPropertyName($rFace->getClass());  // TODO  : remove namespace
+                            $entity->setRelation("belongsTo");
+                            
+                            $rEntity = new \Face\Core\EntityFaceElement();
+                            $rEntity->setType("entity");
+                            $rEntity->setName($face->getClass()); // TODO  : remove namespace
+                            $rEntity->setClass($face->getClass());
+                            $rEntity->setPropertyName($face->getClass()); // TODO  : remove namespace
+                            
+                            
+                            
+                            $tableName = $kcu->getTable_name();
+                            $referencedTable=$kcu->getReferencedColumn()->getTable_name();
+                            
+                            //////////////////////////////////////////
+                            // PROMPT THE USER IF HAS ONE OR HAS MANY
+                            do{
+                                
+                                $input = readline("$referencedTable has many $tableName ? (Y/n) ");
+                                
+                                if($input=="")
+                                    $input="y";
+                                else
+                                    $input=  strtolower ($input);
+                                
+                                if($input=="y")
+                                    $relation = "hasMany";
+                                else if($input=="n")
+                                    $relation = "hasOne";
+                                else
+                                    $relation = null;
+                               
+                                
+                                
+                            }while( $relation == null );
+                            
+                            $rEntity->setRelation($relation);
+
+                            $entity->setRelatedBy($rEntity->getName());
+                            $rEntity->setRelatedBy($entity->getName());
+                            
+                            
+                            $idColumn=$kcu->getColumn_name();
+                            $rIdColumn=$kcu->getReferencedColumn()->getColumn_name();
+                            
+                            $entity->setSqlJoin([$idColumn=>$rIdColumn]);
+                            $rEntity->setSqlJoin([$rIdColumn=>$idColumn]);
+                            
+                            $face->addElement($entity);
+                            $rFace->addElement($rEntity);
+                            
                            
                         }
-
-
                     }
                 }
                 

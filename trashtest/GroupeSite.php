@@ -1,26 +1,36 @@
 <?php
     
-class Leaf {
+class GroupeSite {
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $id;
+    protected $id_groupe_site;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $length;
+    protected $libelle;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $tree_id;
+    protected $description;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Tree;
+    protected $actif;
+    /**
+     *
+     */
+    // TODO TYPE + COMMENT + ENTITY SI BESOIN
+    protected $groupe_url;
+    /**
+     *
+     */
+    // TODO TYPE + COMMENT + ENTITY SI BESOIN
+    protected $GeoSite;
     
     
         
@@ -29,11 +39,11 @@ class Leaf {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"leaf",
+            "sqlTable"=>"groupe_site",
             
             "elements"=>[            
 
-                "id"=>[
+                "id_groupe_site"=>[
                     "identifier"=>true,
                     "sql"=>[
                         "isPrimary" => true,
@@ -41,7 +51,7 @@ class Leaf {
                 ],
                 
 
-                "length"=>[
+                "libelle"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
@@ -49,20 +59,36 @@ class Leaf {
                 ],
                 
 
-                "tree_id"=>[
+                "description"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
                     ],
                 ],
                 
-                "Tree"=>[
-                    "property"=>"Tree",
-                    "class"=>"Tree",
-                    "relation"=>"belongsTo",
-                    "relatedBy"=>"Leaf",
+
+                "actif"=>[
+                    "identifier"=>false,
                     "sql"=>[
-                    "join" => ["tree_id"=>"id"]
+                        "isPrimary" => false,
+                    ],
+                ],
+                
+
+                "groupe_url"=>[
+                    "identifier"=>false,
+                    "sql"=>[
+                        "isPrimary" => false,
+                    ],
+                ],
+                
+                "GeoSite"=>[
+                    "property"=>"GeoSite",
+                    "class"=>"GeoSite",
+                    "relation"=>"hasMany",
+                    "relatedBy"=>"GroupeSite",
+                    "sql"=>[
+                    "join" => ["id_groupe_site"=>"id_groupe_site"]
                     ],
                 ],
                 

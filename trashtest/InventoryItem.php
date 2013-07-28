@@ -1,31 +1,41 @@
 <?php
     
-class Lemon {
+class InventoryItem {
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $id;
+    protected $id_inventory_item;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $tree_id;
+    protected $id_inventory;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $mature;
+    protected $libelle;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Tree;
+    protected $number;
     /**
      *
      */
     // TODO TYPE + COMMENT + ENTITY SI BESOIN
-    protected $Seed;
+    protected $type;
+    /**
+     *
+     */
+    // TODO TYPE + COMMENT + ENTITY SI BESOIN
+    protected $order;
+    /**
+     *
+     */
+    // TODO TYPE + COMMENT + ENTITY SI BESOIN
+    protected $Inventory;
     
     
         
@@ -34,11 +44,11 @@ class Lemon {
     public static function __getEntityFace() {
     
         return [
-            "sqlTable"=>"lemon",
+            "sqlTable"=>"inventory_item",
             
             "elements"=>[            
 
-                "id"=>[
+                "id_inventory_item"=>[
                     "identifier"=>true,
                     "sql"=>[
                         "isPrimary" => true,
@@ -46,7 +56,7 @@ class Lemon {
                 ],
                 
 
-                "tree_id"=>[
+                "id_inventory"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
@@ -54,30 +64,44 @@ class Lemon {
                 ],
                 
 
-                "mature"=>[
+                "libelle"=>[
                     "identifier"=>false,
                     "sql"=>[
                         "isPrimary" => false,
                     ],
                 ],
                 
-                "Tree"=>[
-                    "property"=>"Tree",
-                    "class"=>"Tree",
-                    "relation"=>"belongsTo",
-                    "relatedBy"=>"Lemon",
+
+                "number"=>[
+                    "identifier"=>false,
                     "sql"=>[
-                    "join" => ["tree_id"=>"id"]
+                        "isPrimary" => false,
                     ],
                 ],
                 
-                "Seed"=>[
-                    "property"=>"Seed",
-                    "class"=>"Seed",
-                    "relation"=>"hasMany",
-                    "relatedBy"=>"Lemon",
+
+                "type"=>[
+                    "identifier"=>false,
                     "sql"=>[
-                    "join" => ["id"=>"lemon_id"]
+                        "isPrimary" => false,
+                    ],
+                ],
+                
+
+                "order"=>[
+                    "identifier"=>false,
+                    "sql"=>[
+                        "isPrimary" => false,
+                    ],
+                ],
+                
+                "Inventory"=>[
+                    "property"=>"Inventory",
+                    "class"=>"Inventory",
+                    "relation"=>"belongsTo",
+                    "relatedBy"=>"InventoryItem",
+                    "sql"=>[
+                    "join" => ["id_inventory"=>"id_inventory"]
                     ],
                 ],
                 
