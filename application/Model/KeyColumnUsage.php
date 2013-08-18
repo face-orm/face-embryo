@@ -99,6 +99,7 @@ class KeyColumnUsage{
                 "column"=>[
                     "class"=>"Model\Columns",
                     "relatedBy"=>"keyColumnUsages",
+                    "relation"=>"hasOne",
                     "sql"  => [
                         "join" => [
                             "table_name"   => "table_name",
@@ -111,6 +112,7 @@ class KeyColumnUsage{
                 "referencedColumn"=>[
                     "class"=>"Model\Columns",
                     "relatedBy"=>"keyColumnUsagesReferencing",
+                    "relation"=>"hasOne",
                     "sql"  => [
                         "join" => [
                             "referenced_table_name"   => "table_name",

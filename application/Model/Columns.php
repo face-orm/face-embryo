@@ -121,6 +121,7 @@ class Columns{
                 "table"=>[
                     "class"=>"Model\Tables",
                     "relatedBy"=>"columns",
+                    "relation"=>"hasOne",
                     "sql"   =>[
                         "join"  => [
                             "table_name"   => "table_name",
