@@ -206,9 +206,15 @@ class Embryo extends \Climate\Controller{
                             //////////////////////////////////////////
                             // PROMPT THE USER IF HAS ONE OR HAS MANY
                             do{
-                                
-                                $input = readline("$referencedTable has many $tableName ? (Y/n) ");
-                                
+
+                                if(function_exists("readline"))
+                                    $input = \readline("$referencedTable has many $tableName ? (Y/n) ");
+                                else{
+                                    echo "Readline Not available on your system. Auto set that " . $rEntity->getName() . " hasMany " . $entity->getName() ;
+                                    echo PHP_EOL;
+                                    $input = "y";
+                                }
+
                                 if($input=="")
                                     $input="y";
                                 else
