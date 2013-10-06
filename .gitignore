@@ -4,6 +4,9 @@
 #netbeans
 /nbproject/
 /build/
+
+#phpstorm
+/.idea/
  
 #composer
 composer.lock

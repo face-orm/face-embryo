@@ -4,7 +4,7 @@
 
 ?>
 
-<?php if($namespace){ ?>        
+<?php if(isset($namespace) && $namespace){ ?>
 namespace <?= $class->getNamespace() ?>;
 <?php } ?>
     
@@ -28,16 +28,28 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
 
 <?php     if($column->isEntity()){ ?>
     /**
-     * @return \<?= $column->getClass() ?> 
+     * @return \<?= $column->getClass() ?>
+
      */
-<?php     } ?>
+    <?php     } ?>
     public function get<?= ucfirst($column->getPropertyName()) ?>(){
         return $this-><?= $column->getPropertyName() ?>;
     }
 
+<?php     if($column->getRelation() == "hasMany"){ ?>
+    /**
+     * @return \<?= $column->getClass() ?>
+
+     */
+    public function add<?= ucfirst($column->getPropertyName()) ?>($value){
+        $this-><?= $column->getPropertyName() ?>[]=$value;
+        <?php         if(isset($fluentSetter) && $fluentSetter){ ?>return $this;<?php } ?>
+        }
+    <?php     } ?>
+
     public function set<?= ucfirst($column->getPropertyName()) ?>($value){
         $this-><?= $column->getPropertyName() ?>=$value;
-<?php         if($fluentSetter){ ?>return $this;<?php } ?>
+<?php         if(isset($fluentSetter) && $fluentSetter){ ?>return $this;<?php } ?>
     }
 
 <?php } ?>
@@ -66,7 +78,7 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
                     "relation"=>"<?= $column->getRelation() ?>",
                     "relatedBy"=>"<?= $column->getRelatedBy() ?>",
                     "sql"=>[
-                    "join" => ["<?= key( $column->getSqlJoin() )?>"=>"<?= current( $column->getSqlJoin() )?>"]
+                        "join" => ["<?= key( $column->getSqlJoin() )?>"=>"<?= current( $column->getSqlJoin() )?>"]
                     ],
                 ],
 <?php } ?>

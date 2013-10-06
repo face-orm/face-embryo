@@ -10,16 +10,26 @@ namespace Controller;
 class Embryo extends \Climate\Controller{
 
     public function generateOld(){
-        
+
+        $host = $this->h;
+        $user = $this->u;
+        $pswd = $this->p;
+        $db   = $this->d;
+
+        //////////////////////
+        // CREATE THE QUERY
         $fQ=\Model\Tables::faceQueryBuilder();
         $fQ->join("columns");
         $fQ->join("columns.keyColumnUsages");
         $fQ->join("columns.keyColumnUsages.referencedColumn");
         $fQ->where("~table_schema=:name");
-        $fQ->bindValue(":name","lesvacsophie");
+        $fQ->bindValue(":name",$db);
 
-        
-        $tables=\Climate\Application::service("ORM")->execute($fQ);
+        $pdo=new \PDO("mysql:host=$host;dbname=information_schema",$user, $pswd);
+
+        //////////////////////
+        // EXECUTE THE QUERY
+        $tables=  \Face\ORM::execute($fQ, $pdo);
         
         /* @var $tables \Face\Sql\Result\ResultSet */
 
@@ -90,6 +100,7 @@ class Embryo extends \Climate\Controller{
         $user = $this->u;
         $pswd = $this->p;
         $db   = $this->d;
+
         $output= rtrim($this->o,"/");
         if ($output{0} != "/") {
             $output=  \Climate\Application::$baseDir."/$output";
@@ -127,7 +138,7 @@ class Embryo extends \Climate\Controller{
         // GENERATE PROPERTIES
         foreach($tables as $t){
             
-            $class=new \Face\Core\EntityFace();
+            $class=new \Face\Core\EntityFace(null,null);
             $class->setSqlTable($t->getTable_name());
             
             $class->setClass( ucfirst($filterChain->filter( $t->getTable_name() ) ));
@@ -140,7 +151,7 @@ class Embryo extends \Climate\Controller{
 
                 echo $c->getColumn_name().PHP_EOL;
                 
-                $p=new \Face\Core\EntityFaceElement();
+                $p=new \Face\Core\EntityFaceElement(null,null);
                 $p->setSqlColumnName($c->getColumn_name());
                 $p->setPropertyName($p->getSqlColumnName());
                 $p->setType("value");
@@ -185,7 +196,7 @@ class Embryo extends \Climate\Controller{
                             
                             
                             // TODO look if name/property doesnt already exist
-                            $entity = new \Face\Core\EntityFaceElement();
+                            $entity = new \Face\Core\EntityFaceElement(null,null);
                             $entity->setType("entity");
                             $entity->setName($rFace->getClass());  // TODO  : remove namespace
                             $entity->setClass($rFace->getClass());
@@ -207,9 +218,13 @@ class Embryo extends \Climate\Controller{
                             // PROMPT THE USER IF HAS ONE OR HAS MANY
                             do{
 
+                                $question = "$referencedTable has many $tableName ? (Y/n) :";
                                 if(function_exists("readline"))
-                                    $input = \readline("$referencedTable has many $tableName ? (Y/n) ");
-                                else{
+                                    $input = \readline($question);
+                                else if(function_exists("stream_get_line")){
+                                    echo $question;
+                                    $input = stream_get_line(STDIN, 1024, PHP_EOL);
+                                }else{
                                     echo "Readline Not available on your system. Auto set that " . $rEntity->getName() . " hasMany " . $entity->getName() ;
                                     echo PHP_EOL;
                                     $input = "y";
@@ -276,16 +291,26 @@ class Embryo extends \Climate\Controller{
     
     
     public function view(){
-        
+
+        $host = $this->h;
+        $user = $this->u;
+        $pswd = $this->p;
+        $db   = $this->d;
+
+        //////////////////////
+        // CREATE THE QUERY
         $fQ=\Model\Tables::faceQueryBuilder();
         $fQ->join("columns");
         $fQ->join("columns.keyColumnUsages");
         $fQ->join("columns.keyColumnUsages.referencedColumn");
         $fQ->where("~table_schema=:name");
-        $fQ->bindValue(":name","lesvacsophie");
+        $fQ->bindValue(":name",$db);
 
-        
-        $tables=\Climate\Application::service("ORM")->execute($fQ);
+        $pdo=new \PDO("mysql:host=$host;dbname=information_schema",$user, $pswd);
+
+        //////////////////////
+        // EXECUTE THE QUERY
+        $tables=  \Face\ORM::execute($fQ, $pdo);
         
         //echo $fQ->getSqlString();
 
@@ -298,21 +323,25 @@ class Embryo extends \Climate\Controller{
                 // number of column usages
                 if(count($c->getKeyColumnUsages())>0)
                     echo "::".count($c->getKeyColumnUsages());
+
+
                 // is autoinc
                 if($c->getExtra()=="auto_increment")
                     echo \Printemps::Color(" AUTOINCREMENT","green");
 
                 echo PHP_EOL;
 
-                
-                foreach ($c->getKeyColumnUsages() as $kcu){
-                    if($kcu->getReferencedColumn())
-                        echo "     ".\Printemps::Color("| ".$kcu->getReferencedColumn()->getTable_name() . "." . $kcu->getReferencedColumn()->getColumn_name(),"yellow").PHP_EOL;
-                    else if(strtolower ($kcu->getConstraint_name())=="primary")
-                        echo "     ".\Printemps::Color("| PRIMARY", "green",0).PHP_EOL;
-                    else 
-                        echo "unknown".PHP_EOL;
-                }
+                if(count($c->getKeyColumnUsages())>0)
+                    foreach ($c->getKeyColumnUsages() as $kcu){
+                        if($kcu->getReferencedColumn())
+                            echo "     ".\Printemps::Color("| ".$kcu->getReferencedColumn()->getTable_name() . "." . $kcu->getReferencedColumn()->getColumn_name(),"yellow").PHP_EOL;
+                        else if(strtolower ($kcu->getConstraint_name())=="primary")
+                            echo "     ".\Printemps::Color("| PRIMARY", "green",0).PHP_EOL;
+                        else if(strtolower ($kcu->getConstraint_name())=="unique")
+                            echo "     ".\Printemps::Color("| UNIQUE", "green",0).PHP_EOL;
+                        else
+                            echo "     ".\Printemps::Color("| UNKNOWN : ". $kcu->getConstraint_name(), "green",0).PHP_EOL;
+                    }
                 
             }
             

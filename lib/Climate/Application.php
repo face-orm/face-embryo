@@ -114,12 +114,8 @@ class Application {
     
     
     
-    public static function stop($output=null,$logMessage="."){
-        
-        \Climate\Log::access("Script Ended after ".(microtime(true)-START_SCRIPT)." seconds".$logMessage);  // TODO pretify the log writte
-        
+    public static function stop($output=null){
         echo PHP_EOL;
-        
         exit();
     }
     
@@ -132,10 +128,7 @@ class Application {
         self::stop(null," with an error.");
     }
     
-    
-    // TODO NORMALIZE LOG ERROR WITH A LEVEL
-    
-    
+
     /**
      * set the user config of the application
      * @param \Climate\Config $conf

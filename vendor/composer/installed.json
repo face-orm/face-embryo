@@ -93,51 +93,6 @@
         "homepage": "http://symfony.com"
     },
     {
-        "name": "face/face",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/laemons/face.git",
-            "reference": "79de97d39321731c5dc83cfcb07ff388a8f2cb1e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/laemons/face/zipball/79de97d39321731c5dc83cfcb07ff388a8f2cb1e",
-            "reference": "79de97d39321731c5dc83cfcb07ff388a8f2cb1e",
-            "shasum": ""
-        },
-        "require": {
-            "peek/peek": "1.0.*",
-            "php": ">=5.4"
-        },
-        "time": "2013-10-02 21:39:20",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-0": {
-                "Face": "lib/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3"
-        ],
-        "authors": [
-            {
-                "name": "Soufiane Ghzal",
-                "email": "sghzal@gmail.com",
-                "homepage": "https://github.com/SneakyBobito",
-                "role": "Developer"
-            }
-        ],
-        "description": "Modern & Friendly ORM for php5.4",
-        "homepage": "https://github.com/SneakyBobito/face",
-        "keywords": [
-            "orm"
-        ]
-    },
-    {
         "name": "zendframework/zend-stdlib",
         "version": "2.2.4",
         "version_normalized": "2.2.4.0",
@@ -287,6 +242,51 @@
             "colors",
             "console",
             "shell"
+        ]
+    },
+    {
+        "name": "face/face",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/laemons/face.git",
+            "reference": "330041dea519269a1bc50e5ac3d9f8f4c480e1e7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/laemons/face/zipball/330041dea519269a1bc50e5ac3d9f8f4c480e1e7",
+            "reference": "330041dea519269a1bc50e5ac3d9f8f4c480e1e7",
+            "shasum": ""
+        },
+        "require": {
+            "peek/peek": "1.0.*",
+            "php": ">=5.4"
+        },
+        "time": "2013-10-06 12:37:38",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Face": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3"
+        ],
+        "authors": [
+            {
+                "name": "Soufiane Ghzal",
+                "email": "sghzal@gmail.com",
+                "homepage": "https://github.com/SneakyBobito",
+                "role": "Developer"
+            }
+        ],
+        "description": "Modern & Friendly ORM for php5.4",
+        "homepage": "https://github.com/SneakyBobito/face",
+        "keywords": [
+            "orm"
         ]
     }
 ]
