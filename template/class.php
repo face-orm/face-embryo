@@ -2,6 +2,13 @@
 
 /* @var $class \Face\Core\EntityFace */
 
+//////////////////////
+// CREATE THE FILTER TO CONVERT UNDERSCORED/DASHED TABLE/COLUMN NAMES TO CAMELCASE
+$filterChain = new \Zend\Filter\FilterChain();
+$filterChain->attach(new \Zend\Filter\Word\UnderscoreToCamelCase());
+$filterChain->attach(new \Zend\Filter\Word\DashToCamelCase());
+
+
 ?>
 
 <?php if(isset($namespace) && $namespace){ ?>
@@ -32,7 +39,7 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
 
      */
     <?php     } ?>
-    public function get<?= ucfirst($column->getPropertyName()) ?>(){
+    public function get<?= $filterChain->filter($column->getPropertyName()) ?>(){
         return $this-><?= $column->getPropertyName() ?>;
     }
 
@@ -41,13 +48,13 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
      * @return \<?= $column->getClass() ?>
 
      */
-    public function add<?= ucfirst($column->getPropertyName()) ?>($value){
+    public function add<?= $filterChain->filter($column->getPropertyName()) ?>($value){
         $this-><?= $column->getPropertyName() ?>[]=$value;
         <?php         if(isset($fluentSetter) && $fluentSetter){ ?>return $this;<?php } ?>
         }
     <?php     } ?>
 
-    public function set<?= ucfirst($column->getPropertyName()) ?>($value){
+    public function set<?= $filterChain->filter($column->getPropertyName()) ?>($value){
         $this-><?= $column->getPropertyName() ?>=$value;
 <?php         if(isset($fluentSetter) && $fluentSetter){ ?>return $this;<?php } ?>
     }
