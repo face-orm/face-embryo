@@ -1,1 +1,8 @@
-[]
+[
+    {
+        "name": "embryo.phar", 
+        "sha1": "c71c3455374afb833b3f24fcfcdf74c881174cd9", 
+        "url": "http://laemons.github.io/face-embryo/build/embryo-0.3.0.phar", 
+        "version": "0.3.0"
+    }
+]
