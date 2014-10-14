@@ -23,3 +23,5 @@
 
 
 include 'lib/bootstrap.php';
+
+define("APP_VERSION", "@package_version@");

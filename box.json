@@ -1,0 +1,32 @@
+{
+
+     "chmod": "0755",
+ 
+     "directories": [
+         "application",
+         "lib",
+         "template"
+     ],
+     
+     "finder": [
+        {
+            "name": "*.php",
+            "exclude": ["Tests"],
+            "in": "vendor"
+        }
+    ],
+     
+
+     "files": [ 
+        "LICENSE",
+        "embryo.php"
+    ],
+     
+    
+     "main": "embryo.php",
+     "output": "embryo.phar",
+     "stub"  : true,
+     
+     "git-version": "package_version"
+     
+   }

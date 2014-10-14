@@ -2,11 +2,19 @@
 ---
 
 default:
-  controller: Climate
-  action: climate
-  man: Climate Application Manual Page
+  controller: Base
+  action: welcome
+  man: Welcome message
 
   children:
+      
+    update:
+        
+      controller: Base
+      action: update
+      man: updates the build of face embryo
+      
+        
 
     models:
       options:
