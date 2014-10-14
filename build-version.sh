@@ -35,6 +35,10 @@ command -v box >/dev/null 2>&1 || { echo "Error : Command box is not installed o
 command -v python >/dev/null 2>&1 || { echo "Error : Command python is not installed on the system"; echo  "Exiting..." >&2; exit 65; }
 
 
+# CHECK THAT WE CAN CHANGE BRANCH
+git checkout gh-pages
+git checkout --quiet master
+
 
 TAG=$1
 
