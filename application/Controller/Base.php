@@ -19,7 +19,13 @@ class Base extends \Climate\Controller{
         
         $manager = new Manager(Manifest::loadFile($manifest));
 
-        $manager->update(APP_VERSION, true, true);
+        $updated = $manager->update(APP_VERSION, true, true);
+        
+        if($updated){
+            echo \Printemps::Color("Embryo was updated", "green");
+        }else{
+            echo \Printemps::Color("No Update available", "yellow");
+        }
         
     }
     
