@@ -16,5 +16,11 @@
         "sha1": "0e940c217d27dabda3f076cee8017b556dd86074", 
         "url": "http://laemons.github.io/face-embryo/build/embryo-0.3.phar", 
         "version": "0.3"
+    }, 
+    {
+        "name": "embryo.phar", 
+        "sha1": "6ecd2e94dc6590255e68a275a3f3eccb216ee5ca", 
+        "url": "http://laemons.github.io/face-embryo/build/embryo-0.4.phar", 
+        "version": "0.4"
     }
 ]
