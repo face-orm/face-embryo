@@ -29,6 +29,10 @@ class Base extends \Climate\Controller{
         echo PHP_EOL;
         echo " Version : " . APP_VERSION;
         
+        echo PHP_EOL;
+        echo PHP_EOL;
+        
+        echo "For help : embryo help";
     }
     
     public function help(){
