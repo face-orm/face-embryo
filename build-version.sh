@@ -38,11 +38,13 @@ command -v python >/dev/null 2>&1 || { echo "Error : Command python is not insta
 
 TAG=$1
 
+# Tag master
+git tag -a ${TAG} -m 'version${TAG}'
+
 # Build phar
 box build
 
-# Tag master
-git tag -a ${TAG} -m 'version${TAG}'
+
 
 # GO TO gh-pages
 git checkout gh-pages
