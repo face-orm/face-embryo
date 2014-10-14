@@ -41,23 +41,18 @@
  */
 define("START_SCRIPT", microtime(true));
 
-/**
- * Set Basepath to Root of Application. It makes includes easier .
- */
-$baseDir = realpath( getcwd() );
-chdir(__DIR__."/../");
-
+define("APP_ROOT",__DIR__ . "/..");
 
 /**
  * Get Composer Autoloader because it just works like a charm :)
  */
-require_once "vendor/autoload.php";
+require_once APP_ROOT . "/vendor/autoload.php";
 
 /**
  * SET THE BASE DIRECTORY
  */
 
-\Climate\Application::$baseDir=$baseDir;
+\Climate\Application::$baseDir = realpath( getcwd() );
 
 
 /*===============================
@@ -66,7 +61,7 @@ require_once "vendor/autoload.php";
  *                              =
  ********************************/
 
-$configsFile = "application/climate.config.yml";
+$configsFile = APP_ROOT . "/application/climate.config.yml";
 $configArray = (new Symfony\Component\Yaml\Parser())->parse(file_get_contents($configsFile));
 
 Climate\Config::build($configArray);
@@ -79,7 +74,7 @@ Climate\Config::build($configArray);
  * Get and Parse the yaml route =
  *                              =
  ********************************/
-$routeFile=Climate\Config::routesFile();
+$routeFile=  APP_ROOT . "/application/routes.yml";
 
 $routeArray=(new Symfony\Component\Yaml\Parser())->parse(file_get_contents($routeFile));
 
@@ -94,6 +89,6 @@ $router=new \Climate\Router($routeArray);
 
 Climate\Application::init(array_slice($argv,1),$router);
 
-require 'application/onStartup.php';
+require APP_ROOT . '/application/onStartup.php';
 
 Climate\Application::start();
