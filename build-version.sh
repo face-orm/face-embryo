@@ -1,11 +1,22 @@
 #!/bin/bash
 
+
+
+
 set -e
 
 #CHECK COMMAND CALL
 if [ $# -ne 1 ]; then
   echo "Usage: `basename $0` <tag>"
   exit 65
+fi
+
+#CHECK TAG FORMAT
+if ! [[ $1 =~ ^[0-9]\.[0-9]\.[0-9]$ ]]; then
+
+    echo "Tag is not well formated. It should be x.x.x (e.g: 1.1.2)." 
+    echo " Aborting..."
+    exit 65
 fi
 
 # CHECK MASTER BRANCH
