@@ -19,7 +19,7 @@ class Base extends \Climate\Controller{
         
         $manager = new Manager(Manifest::loadFile($manifest));
 
-        $manager->update(APP_VERSION, true);
+        $manager->update(APP_VERSION, true, true);
         
     }
     
