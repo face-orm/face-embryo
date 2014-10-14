@@ -21,7 +21,6 @@
  * @license See LICENSE
  */
 
+define("APP_VERSION", "@package_version@");
 
 include 'lib/bootstrap.php';
-
-define("APP_VERSION", "@package_version@");

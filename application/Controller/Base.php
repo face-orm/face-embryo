@@ -25,7 +25,9 @@ class Base extends \Climate\Controller{
     
     public function welcome(){
         
-        echo "Welcome to face embryo";
+        echo "Face embryo";
+        echo PHP_EOL;
+        echo " Version : " . APP_VERSION;
         
     }
     
