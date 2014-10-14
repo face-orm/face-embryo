@@ -37,8 +37,8 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
     /**
      * @return \<?= $column->getClass() ?>
 
-     */
-    <?php     } ?>
+     */<?php     } ?>
+
     public function get<?= $filterChain->filter($column->getPropertyName()) ?>(){
         return $this-><?= $column->getPropertyName() ?>;
     }
@@ -85,7 +85,7 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
                     "relation"=>"<?= $column->getRelation() ?>",
                     "relatedBy"=>"<?= $column->getRelatedBy() ?>",
                     "sql"=>[
-                        "join" => ["<?= key( $column->getSqlJoin() )?>"=>"<?= current( $column->getSqlJoin() )?>"]
+                        "join" => ["<?= key( $column->getSqlJoin() )?>"=>"<?= current( $column->getSqlJoin() )?>"],<?php if($column->getRelation() == "hasManyThrough"){ ?>  "through" => "<?= $column->getSqlThrough() ?>"<?php } ?> 
                     ],
                 ],
 <?php } ?>

@@ -123,6 +123,7 @@ class Embryo extends \Climate\Controller{
         /* @var $tables \Face\Sql\Result\ResultSet */
 
         
+
         //////////////////////
         // CREATE THE FILTER TO CONVERT UNDERSCORED/DASHED TABLE/COLUMN NAMES TO CAMELCASE
         $filterChain = new \Zend\Filter\FilterChain();
@@ -130,47 +131,89 @@ class Embryo extends \Climate\Controller{
         $filterChain->attach(new \Zend\Filter\Word\DashToCamelCase());
         
 
-        // LIST OF THE THE CLASS :: 1 CLASS = 1 TABLE
+        // LIST OF THE THE CLASS :: 1 CLASS = 1 TABLE (except through tables
         $classes=array();
+        $throughTables = array();
+        
         
         
         //////////////////////
         // GENERATE PROPERTIES
         foreach($tables as $t){
             
-            $class=new \Face\Core\EntityFace(null,null);
-            $class->setSqlTable($t->getTable_name());
+            $isThrough = false;
             
-            $class->setClass( ucfirst($filterChain->filter( $t->getTable_name() ) ));
-            
-            
-            $classes[$t->getTable_name()]=$class;
-      
-            foreach($t->getColumns() as $c){
-                /* @var $c \Model\Columns */
+            if(count($t->getColumns()) == 2  && count($t->getForeignKeys()) && count($t->getPrimaries()) == 2 ){
+                
+                
+                
+                do{
+                    // Ask the user if it is a through relation
+                    $tableName = $t->getTable_name();
+                    echo PHP_EOL;
+                    $question = \Printemps::Color($tableName, "green") . " is a " . \Printemps::Color("ManyToMany", "blue") . " relation table (hasManyThrough) [Y/n] :";
+                    if(function_exists("readline"))
+                        $input = \readline($question);
+                    else if(function_exists("stream_get_line")){
+                        echo $question;
+                        $input = stream_get_line(STDIN, 1024, PHP_EOL);
+                    }else{
+                        echo "Readline Not available on your system. Auto set that $tableName is a many to many table (hasManyThrough)";
+                        echo PHP_EOL;
+                        $input = "y";
+                    }
 
-                echo $c->getColumn_name().PHP_EOL;
+                    if(!$input || strtolower($input) == "y" ){
+                        $isThrough = true;
+                    }else if(strtolower ($input) == "n"){
+                        $isThrough = false;
+                    }else{
+                        $isThrough = null;
+                    }
+                }while(null === $isThrough);
                 
-                $p=new \Face\Core\EntityFaceElement(null,null);
-                $p->setSqlColumnName($c->getColumn_name());
-                $p->setPropertyName($p->getSqlColumnName());
-                $p->setType("value");
-                $p->setName($p->getSqlColumnName());
-                $p->setSqlAutoIncrement($c->getExtra()=="auto_increment");
+            }
+            
+            
+            
+            if($isThrough){
+                // in this case we have a virtual table (no model association). We will have to generate 2 hasManyThrough relatioinships
                 
+                $throughTables[$t->getTable_name()] = $t;
                 
-                if($c->getKeyColumnUsages()){
-                    foreach ($c->getKeyColumnUsages() as $kcu){
-                        if(  strtolower($kcu->getConstraint_name())  ==  "primary"  ){
-                           $p->setSqlIsPrimary(true);
-                           $p->setIsIdentifier(true);
+            }else{
+                $class=new \Face\Core\EntityFace(null,null);
+                $class->setSqlTable($t->getTable_name());
+
+                $class->setClass( ucfirst($filterChain->filter( $t->getTable_name() ) ));
+
+
+                $classes[$t->getTable_name()]=$class;
+
+                foreach($t->getColumns() as $c){
+                    /* @var $c \Model\Columns */
+
+                    $p=new \Face\Core\EntityFaceElement(null,null);
+                    $p->setSqlColumnName($c->getColumn_name());
+                    $p->setPropertyName($p->getSqlColumnName());
+                    $p->setType("value");
+                    $p->setName($p->getSqlColumnName());
+                    $p->setSqlAutoIncrement($c->getExtra()=="auto_increment");
+
+
+                    if($c->getKeyColumnUsages()){
+                        foreach ($c->getKeyColumnUsages() as $kcu){
+                            if(  strtolower($kcu->getConstraint_name())  ==  "primary"  ){
+                               $p->setSqlIsPrimary(true);
+                               $p->setIsIdentifier(true);
+                            }
                         }
                     }
+
+                    $classes[$t->getTable_name()]->addElement($p);
+
+
                 }
-                
-                $classes[$t->getTable_name()]->addElement($p);
-                
-                
             }
         }
         
@@ -180,6 +223,10 @@ class Embryo extends \Climate\Controller{
         // GENERATE ENTITIES
         foreach($tables as $t){
       
+            if(!isset($classes[$t->getTable_name()])){
+                continue;
+            }
+            
             foreach($t->getColumns() as $c){
                 /* @var $c \Model\Columns */
 
@@ -187,80 +234,95 @@ class Embryo extends \Climate\Controller{
                 if($c->getKeyColumnUsages()){
                     foreach ($c->getKeyColumnUsages() as $kcu){
                         /* @var $kcu \Model\KeyColumnUsage */
+                            
+                        // in this case it is a foreign key
                         if($kcu->getReferencedColumn()){
-                           
-  
                             
-                            $face=$classes[$t->getTable_name()];
-                            $rFace=$classes[$kcu->getReferencedColumn()->getTable_name()];
-                            
-                            
-                            // TODO look if name/property doesnt already exist
-                            $entity = new \Face\Core\EntityFaceElement(null,null);
-                            $entity->setType("entity");
-                            $entity->setName($rFace->getClass());  // TODO  : remove namespace
-                            $entity->setClass($rFace->getClass());
-                            $entity->setPropertyName($rFace->getClass());  // TODO  : remove namespace
-                            $entity->setRelation("belongsTo");
-                            
-                            $rEntity = new \Face\Core\EntityFaceElement();
-                            $rEntity->setType("entity");
-                            $rEntity->setName($face->getClass()); // TODO  : remove namespace
-                            $rEntity->setClass($face->getClass());
-                            $rEntity->setPropertyName($face->getClass()); // TODO  : remove namespace
-                            
-                            
-                            
-                            $tableName = $kcu->getTable_name();
-                            $referencedTable=$kcu->getReferencedColumn()->getTable_name();
-                            
-                            //////////////////////////////////////////
-                            // PROMPT THE USER IF HAS ONE OR HAS MANY
-                            do{
+                            // in this case it referes to a through table then we create a hasManytrough relationship
+                            if(isset($throughTables[$kcu->getReferencedColumn()->getTable_name()])){
+                                
+                                
 
-                                $question = "$referencedTable has many $tableName ? (Y/n) :";
-                                if(function_exists("readline"))
-                                    $input = \readline($question);
-                                else if(function_exists("stream_get_line")){
-                                    echo $question;
-                                    $input = stream_get_line(STDIN, 1024, PHP_EOL);
-                                }else{
-                                    echo "Readline Not available on your system. Auto set that " . $rEntity->getName() . " hasMany " . $entity->getName() ;
+                                
+                                
+                            // this is a hasMany or hasOne relation    
+                            }else{
+
+                                $face=$classes[$t->getTable_name()];
+                                $rFace=$classes[$kcu->getReferencedColumn()->getTable_name()];
+                                
+                                
+
+
+                                // TODO look if name/property doesnt already exist
+                                $entity = new \Face\Core\EntityFaceElement(null,null);
+                                $entity->setType("entity");
+                                $entity->setName($rFace->getClass());  // TODO  : remove namespace
+                                $entity->setClass($rFace->getClass());
+                                $entity->setPropertyName($rFace->getClass());  // TODO  : remove namespace
+                                $entity->setRelation("belongsTo");
+
+                                $rEntity = new \Face\Core\EntityFaceElement();
+                                $rEntity->setType("entity");
+                                $rEntity->setName($face->getClass()); // TODO  : remove namespace
+                                $rEntity->setClass($face->getClass());
+                                $rEntity->setPropertyName($face->getClass()); // TODO  : remove namespace
+
+
+
+                                $tableName = $kcu->getTable_name();
+                                $referencedTable=$kcu->getReferencedColumn()->getTable_name();
+
+                                //////////////////////////////////////////
+                                // PROMPT THE USER IF HAS ONE OR HAS MANY
+                                do{
+
                                     echo PHP_EOL;
-                                    $input = "y";
-                                }
+                                    $question = \Printemps::Color($referencedTable, "green") 
+                                            . \Printemps::Color(" HasMany ", "blue")  
+                                            . \Printemps::Color($tableName, "green") ."  ? (Y/n) :";
+                                    if(function_exists("readline"))
+                                        $input = \readline($question);
+                                    else if(function_exists("stream_get_line")){
+                                        echo $question;
+                                        $input = stream_get_line(STDIN, 1024, PHP_EOL);
+                                    }else{
+                                        echo "Readline Not available on your system. Auto set that " . $rEntity->getName() . " hasMany " . $entity->getName() ;
+                                        echo PHP_EOL;
+                                        $input = "y";
+                                    }
 
-                                if($input=="")
-                                    $input="y";
-                                else
-                                    $input=  strtolower ($input);
-                                
-                                if($input=="y")
-                                    $relation = "hasMany";
-                                else if($input=="n")
-                                    $relation = "hasOne";
-                                else
-                                    $relation = null;
-                               
-                                
-                                
-                            }while( $relation == null );
-                            
-                            $rEntity->setRelation($relation);
+                                    if($input=="")
+                                        $input="y";
+                                    else
+                                        $input=  strtolower ($input);
 
-                            $entity->setRelatedBy($rEntity->getName());
-                            $rEntity->setRelatedBy($entity->getName());
-                            
-                            
-                            $idColumn=$kcu->getColumn_name();
-                            $rIdColumn=$kcu->getReferencedColumn()->getColumn_name();
-                            
-                            $entity->setSqlJoin([$idColumn=>$rIdColumn]);
-                            $rEntity->setSqlJoin([$rIdColumn=>$idColumn]);
-                            
-                            $face->addElement($entity);
-                            $rFace->addElement($rEntity);
-                            
+                                    if($input=="y")
+                                        $relation = "hasMany";
+                                    else if($input=="n")
+                                        $relation = "hasOne";
+                                    else
+                                        $relation = null;
+
+
+
+                                }while( $relation == null );
+
+                                $rEntity->setRelation($relation);
+
+                                $entity->setRelatedBy($rEntity->getName());
+                                $rEntity->setRelatedBy($entity->getName());
+
+
+                                $idColumn=$kcu->getColumn_name();
+                                $rIdColumn=$kcu->getReferencedColumn()->getColumn_name();
+
+                                $entity->setSqlJoin([$idColumn=>$rIdColumn]);
+                                $rEntity->setSqlJoin([$rIdColumn=>$idColumn]);
+
+                                $face->addElement($entity);
+                                $rFace->addElement($rEntity);
+                            }
                            
                         }
                     }
@@ -270,6 +332,46 @@ class Embryo extends \Climate\Controller{
             }
         }
         
+        // CREATE hasManyThrough relationships
+        foreach($throughTables as $t){
+            foreach($t->getColumns() as $c){
+                if($c->getKeyColumnUsages()){
+                    foreach ($c->getKeyColumnUsages() as $kcu){
+                        /* @var $kcu \Model\KeyColumnUsage */
+                            
+                        // we only want foreign keys
+                        if($kcu->getReferencedColumn()){
+                            
+                            $face  = null;
+                            $oFace = null;
+                            
+                            foreach ($t->getForeignKeys() as $kcuO){
+                                
+                                if($kcuO->getConstraint_name() == $kcu->getConstraint_name()){
+                                    $face = $classes[$kcuO->getReferencedColumn()->getTable_name()];
+                                }else{
+                                    $oFace = $classes[$kcuO->getReferencedColumn()->getTable_name()];
+                                }
+                            }
+
+              
+                            $entity = new \Face\Core\EntityFaceElement(null,null);
+                            $entity->setType("entity");
+                            $entity->setName($oFace->getClass());  // TODO  : remove namespace
+                            $entity->setClass($oFace->getClass());
+                            $entity->setPropertyName($oFace->getClass());  // TODO  : remove namespace
+                            $entity->setRelation("hasManyThrough");
+                            $entity->setSqlThrough($c->getTable_name());
+                            $entity->setRelatedBy($face->getClass());// TODO  : remove namespace
+                            $entity->setSqlJoin([ $kcu->getReferencedColumn()->getColumn_name() => $kcu->getColumn_name() ]);
+
+                            $face->addElement($entity);
+                            
+                        }
+                    }
+                }
+            }
+        }
         
 
         
@@ -327,7 +429,7 @@ class Embryo extends \Climate\Controller{
 
                 // is autoinc
                 if($c->getExtra()=="auto_increment")
-                    echo \Printemps::Color(" AUTOINCREMENT","green");
+                    echo \Printemps::Color(" AUTOINCREMENT","purple");
 
                 echo PHP_EOL;
 
@@ -340,7 +442,7 @@ class Embryo extends \Climate\Controller{
                         else if(strtolower ($kcu->getConstraint_name())=="unique")
                             echo "     ".\Printemps::Color("| UNIQUE", "green",0).PHP_EOL;
                         else
-                            echo "     ".\Printemps::Color("| UNKNOWN : ". $kcu->getConstraint_name(), "green",0).PHP_EOL;
+                            echo "     ".\Printemps::Color("| ". $kcu->getConstraint_name(), "lblue",0).PHP_EOL;
                     }
                 
             }

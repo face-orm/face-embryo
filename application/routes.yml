@@ -15,7 +15,7 @@ default:
           default: localhost
           man: hostname of the db
 
-        u:
+        u:  
           type: string
           default: root
           man: username to login
@@ -23,6 +23,7 @@ default:
         p:
           type: string
           man: password to login
+          default: null
 
         d:
           type: string

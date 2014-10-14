@@ -54,8 +54,15 @@ class KeyColumnUsage{
         return $this->column_name;
     }
 
+    
+    public function isPrimary(){
+        return strtolower($this->getConstraint_name()) === "primary";
+    }
 
 
+    public function getColumn(){
+        return $this->column;
+    }
     
     
     use \Face\Traits\EntityFaceTrait;
@@ -90,7 +97,13 @@ class KeyColumnUsage{
                     ]
                 ],
                 
-                "constraint_name"=>[],
+                "constraint_name"=>[
+                    "identifier"=>true,
+                    "sql"=>[
+                        "isPrimary" => true
+                    ]
+                ],
+                
                 "referenced_table_schema"=>[],
                 "referenced_table_name"=>[],
                 "referenced_column_name"=>[],

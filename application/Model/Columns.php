@@ -25,7 +25,7 @@ class Columns{
 
 
     public function getKeyColumnUsages() {
-        return $this->keyColumnUsages;
+        return $this->keyColumnUsages ? $this->keyColumnUsages : array();
     }
 
         
@@ -56,7 +56,31 @@ class Columns{
     }
 
 
+    public function isPrimary(){
+        foreach($this->getKeyColumnUsages() as $kcu){
+            if($kcu->isPrimary()){
+                return true;
+            }
+        }
+        return false;
+    }
     
+    public function isForeignKey(){
+        foreach($this->getKeyColumnUsages() as $kcu){
+            if($kcu->getReferencedColumn()){
+                return true;
+            }
+        }
+        return false;
+    }
+    public function getForeignKey(){
+        foreach($this->getKeyColumnUsages() as $kcu){
+            if($kcu->getReferencedColumn()){
+                return $kcu;
+            }
+        }
+        return false;
+    }
     
     use \Face\Traits\EntityFaceTrait;
     

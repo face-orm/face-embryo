@@ -19,7 +19,31 @@ class Tables{
         return $this->columns;
     }
 
+    public function getPrimaries(){
+        $p =[];
+        
+        foreach ($this->columns as $c){
+            
+            if($c->isPrimary()){
+                $p[] = $c;
+            }
+            
+        }
+        return $p;
+    }
 
+    public function getForeignKeys(){
+        $p =[];
+        
+        foreach ($this->columns as $c){
+            
+            if($c->isForeignKey()){
+                $p[] = $c->getForeignKey();
+            }
+            
+        }
+        return $p;
+    }
 
     
     
