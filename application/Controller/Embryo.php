@@ -9,88 +9,6 @@ namespace Controller;
  */
 class Embryo extends \Climate\Controller{
 
-    public function generateOld(){
-
-        $host = $this->h;
-        $user = $this->u;
-        $pswd = $this->p;
-        $db   = $this->d;
-
-        //////////////////////
-        // CREATE THE QUERY
-        $fQ=\Model\Tables::faceQueryBuilder();
-        $fQ->join("columns");
-        $fQ->join("columns.keyColumnUsages");
-        $fQ->join("columns.keyColumnUsages.referencedColumn");
-        $fQ->where("~table_schema=:name");
-        $fQ->bindValue(":name",$db);
-
-        $pdo=new \PDO("mysql:host=$host;dbname=information_schema",$user, $pswd);
-
-        //////////////////////
-        // EXECUTE THE QUERY
-        $tables=  \Face\ORM::execute($fQ, $pdo);
-        
-        /* @var $tables \Face\Sql\Result\ResultSet */
-
-        
-        
-        //echo $fQ->getSqlString();
-
-        $classes=array();
-        
-        foreach($tables as $t){
-            
-            $class=new \App\DbClass();
-            $class->setTableName($t->getTable_name());
-            
-            $classes[$t->getTable_name()]=$class;
-      
-            foreach($t->getColumns() as $c){
-                /* @var $c \Model\Columns */
-
-                $p=new \App\DbProperty();
-                $p->setColumnName($c->getColumn_name());
-
-                $classes[$t->getTable_name()]->addProperty($p);
-                if($c->getKeyColumnUsages()){
-                    foreach ($c->getKeyColumnUsages() as $kcu){
-                        if($kcu->getReferencedColumn()){
-                           $cr=$kcu->getReferencedColumn();
-                           $p2=new \App\DbProperty();
-                           $p2->setColumnName($cr->getColumn_name());
-                           $r=new \App\DbRelation();
-                           $r->setReferencingColumn($p);
-                           $r->setReferencedColumn($p2);
-                           $classes[$t->getTable_name()]->addEntity($r);
-                        }else if(  strtolower($kcu->getConstraint_name())=="primary"  ){
-                           $p->setIsPrimary(true);
-                        }
-
-
-                    }
-                }
-            }
-        }
-        
-        
-
-        
-        foreach($classes as $class){
-            /* @var $class \App\DbClass */
-            $file=fopen("trashtest/".$class->getCamelClassName().".php", "w+");
-            ob_start();
-            include "template/class.php";
-            $content = ob_get_contents();
-            ob_end_clean();
-            fwrite($file, $content);
-            fclose($file);
-        }
-
-        
-    }
-    
-    
     
     
     
@@ -379,7 +297,7 @@ class Embryo extends \Climate\Controller{
             /* @var $class \Face\Core\EntityFace */
             $file=fopen("$output/".$class->getClass().".php", "w+"); // TODO : psr-0 structure
             ob_start();
-            include "template/class.php";
+            include APP_ROOT . "/template/class.php";
             $content = ob_get_contents();
             ob_end_clean();
             fwrite($file, $content);
