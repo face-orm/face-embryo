@@ -85,7 +85,7 @@ foreach ($class->getElements() as $column){ /* @var $column \Face\Core\EntityFac
                     "relation"=>"<?= $column->getRelation() ?>",
                     "relatedBy"=>"<?= $column->getRelatedBy() ?>",
                     "sql"=>[
-                        "join" => ["<?= key( $column->getSqlJoin() )?>"=>"<?= current( $column->getSqlJoin() )?>"],<?php if($column->getRelation() == "hasManyThrough"){ ?>  "through" => "<?= $column->getSqlThrough() ?>"<?php } ?> 
+                        "join" => ["<?= key( $column->getSqlJoin() )?>"=>"<?= current( $column->getSqlJoin() )?>"],<?php if($column->getRelation() == "hasManyThrough"){ ?>  "throughTable" => "<?= $column->getSqlThrough() ?>"<?php } ?> 
                     ],
                 ],
 <?php } ?>

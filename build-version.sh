@@ -11,6 +11,10 @@ if [ $# -ne 1 ]; then
   exit 65
 fi
 
+# CHECK TAG FORMAT
+php -r "if(preg_match('/^\d+\.\d+\.\d+(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?\$/',\$argv[1])) exit(0) ;else{ echo 'format of version tag is not invalid' . PHP_EOL ; exit(1);}" $1
+
+
 #CHECK TAG FORMAT
 if ! [[ $1 =~ ^[0-9]\.[0-9]\.[0-9]$ ]]; then
 
