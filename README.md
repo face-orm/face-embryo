@@ -27,7 +27,7 @@ You can download embryo at http://laemons.github.io/face-embryo/build/embryo-0.1
 Then it is recommended to make it executable on the system :
 
 ```shell
-    $ sudo mv embryo-0.1.0.phar /usr/local/bin/embryo
+    $ sudo mv embryo-0.1.2.phar /usr/local/bin/embryo
     $ sudo chmod a+x /usr/local/bin/embryo
 ```
 
