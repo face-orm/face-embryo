@@ -31,7 +31,7 @@ Then it is recommended to make it executable on the system :
     $ sudo chmod a+x /usr/local/bin/embryo
 ```
 
-It's always good to update it in case this readme is not update to date :
+It's always good to update it in case there is a new version of it :
 
 ```shell
     $ embryo update
