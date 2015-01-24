@@ -41,4 +41,27 @@ It's always good to update it in case there is a new version of it :
 Usage
 -----
 
-TODO
+Once it's installed you can generate models for your application.
+
+There a few requirement :
+
+* ``cd`` at the root of your application
+* having a reachable mysql database
+* the tables of the mysql database must use innodb and must have primary keys and foreign keys configured (it's how embryo can detect the relationships between tables)
+
+If everything is ok, just run
+
+``embryo models -h localhost -u username -p password -d database generate -o ./models``
+
+ * -h is the hostname where the db lives
+ * -u is the username used to login into the db
+ * -p is the password used to login into the db
+ * -d is the database name to use
+ * -o is the directoy where we want to output the php class models
+ 
+
+Roadmap
+-------
+
+* Make the generation configurable from a config file
+* Give more controle on the generated files (classname, namespace, default methods...) to allow re-generation of models without erasing current files
