@@ -50,8 +50,9 @@ There a few requirement :
 * the tables of the mysql database must use innodb and must have primary keys and foreign keys configured (it's how embryo can detect the relationships between tables)
 
 If everything is ok, just run
-
-``embryo models -h localhost -u username -p password -d database generate -o ./models``
+```shell
+    embryo models -h localhost -u username -p password -d database generate -o ./models
+```
 
  * -h is the hostname where the db lives
  * -u is the username used to login into the db
