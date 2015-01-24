@@ -18,10 +18,10 @@ mysql schema (foreign keys, primary keys..).
 Install
 -------
 
-You can download embryo at http://laemons.github.io/face-embryo/build/embryo-0.1.0.phar.
+You can download embryo at http://laemons.github.io/face-embryo/build/embryo-0.1.2.phar.
 
 ```shell
-    $ wget http://laemons.github.io/face-embryo/build/embryo-0.1.0.phar
+    $ wget http://laemons.github.io/face-embryo/build/embryo-0.1.2.phar
 ```
 
 Then it is recommended to make it executable on the system :
