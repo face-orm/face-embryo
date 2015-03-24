@@ -1,6 +1,8 @@
 face-embryo
 ===========
 
+**Be aware** : Face library has known a lot of refactoring. Face embryo development has been paused until face api freezes to a stable release and wont work with the latest release.
+
 Embryo is a generation tool for [face ORM](https://github.com/laemons/face).
 
 Embryo is under **Alpha**. It is working, but some behaviours may change, some can be removed and some can will be implemented.
